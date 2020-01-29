@@ -2,6 +2,9 @@
 import java.io.*;
 
 class Multithreading {
+  public static int counter;
+  public static int[] defectiveBulbs = new int[2];
+
   public static void main(String []args) throws Exception
   {
     //region read from txt file
@@ -13,7 +16,6 @@ class Multithreading {
 
     int numBulbs = Integer.parseInt(br.readLine());
     int[] bulbsArray = new int[numBulbs];
-    int[] defectiveBulbs = new int[numBulbs];
     
     while((input = br.readLine()) != null)
     {
@@ -23,20 +25,19 @@ class Multithreading {
     br.close();
     //endregion
     
-    FindDefective(bulbsArray, 0 ,bulbsArray.length, 0, defectiveBulbs);
+    FindDefective(bulbsArray, 0 ,bulbsArray.length);
+    printArray(Multithreading.defectiveBulbs);
   }
 
-
   //Finds the defective bulb
-  public static void FindDefective(int[] bulbs, int min, int max, int counter, int []defectiveBulbs)
+  public static void FindDefective(int[] bulbs, int min, int max)
   {
     if(max - min == 1)
     {
       if(bulbs[min] == 0)
       {
-        //defectiveBulbs[counter] = max;
-        //counter++;
-        System.out.println(max);
+        Multithreading.defectiveBulbs[counter] = max;
+        Multithreading.counter++;
         return;
       }
     }
@@ -48,7 +49,7 @@ class Multithreading {
     {
       if(bulbs[i] == 0)
       {
-        FindDefective(bulbs, min, pivot, counter, defectiveBulbs);
+        FindDefective(bulbs, min, pivot);
       }
     }
 
@@ -57,16 +58,16 @@ class Multithreading {
     {
       if(bulbs[i] == 0)
       {
-        FindDefective(bulbs, pivot, max, counter, defectiveBulbs);
+        FindDefective(bulbs, pivot, max);
       }
     }
   }
 
-  static void printArray(int []array)
+  static void printArray(int[] array)
   {
     for(int i = 0; i < array.length; i++)
     {
-      System.out.print(array);
+      System.out.println(array[i]);
     }
   }
 }
