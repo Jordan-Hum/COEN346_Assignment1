@@ -2,6 +2,9 @@
 import java.io.*;
 
 class Multithreading {
+  public static int counter;
+  public static int[] defectiveBulbs;
+
   public static void main(String []args) throws Exception
   {
     //region read from txt file
@@ -10,9 +13,11 @@ class Multithreading {
 
     String input;
     int argsIndex = 0;
+
     int numBulbs = Integer.parseInt(br.readLine());
     int[] bulbsArray = new int[numBulbs];
-
+    Multithreading.defectiveBulbs = new int[numBulbs];
+    
     while((input = br.readLine()) != null)
     {
       bulbsArray[argsIndex] = Integer.parseInt(input);
@@ -21,57 +26,55 @@ class Multithreading {
     br.close();
     //endregion
     
-    FindDefective(bulbsArray);
+    FindDefective(bulbsArray, 0 ,bulbsArray.length);
+    System.out.print("The defectives bulbs: ");
+    printArray(Multithreading.defectiveBulbs);
+    System.out.println();
+    System.out.print("The number of threads for this problem: ");
   }
 
   //Finds the defective bulb
-  public static int FindDefective(int[] bulbs)
+  public static void FindDefective(int[] bulbs, int min, int max)
   {
-    if(bulbs.length == 1)
+    if(max - min == 1)
     {
-      if(bulbs[0] == 0)
+      if(bulbs[min] == 0)
       {
-        System.out.println("here");
-        return 1;
-      }
-    }
-    boolean isDefective = false;
-    int pivot = bulbs.length / 2;
-
-    //Initialize left array
-    int[] leftArr = new int[pivot];
-    for (int i = 0; i < pivot; i++) 
-    {
-      leftArr[i] = bulbs[i];
-    }
-
-    for(int i = 0; i < leftArr.length; i++)
-    {
-      if(leftArr[i] == 0)
-      {
-        isDefective = true;
-        FindDefective(leftArr);
+        Multithreading.defectiveBulbs[counter] = max;
+        Multithreading.counter++;
+        return;
       }
     }
 
-    //Initialize right array
-    int[] rightArr = new int[pivot];
-    for (int i = pivot; i < bulbs.length; i++) 
+    int pivot = (min + max) / 2;
+    
+    //Left array
+    for(int i = min; i < pivot; i++)
     {
-      rightArr[i - pivot] = bulbs[i];
-    }
-
-    for(int i = 0; i < rightArr.length; i++)
-    {
-      if(rightArr[i] == 0)
+      if(bulbs[i] == 0)
       {
-        isDefective = true;
-        FindDefective(rightArr);
+        FindDefective(bulbs, min, pivot);
       }
     }
 
-    return 1;
+    //Right array
+    for(int i = pivot; i < max; i++)
+    {
+      if(bulbs[i] == 0)
+      {
+        FindDefective(bulbs, pivot, max);
+      }
+    }
+  }
+
+  static void printArray(int[] array)
+  {
+    for(int i = 0; i < array.length; i++)
+    {
+      if(array[i] != 0)
+      {
+        System.out.print(array[i] + " ");
+      }
+    }
   }
 }
-
-  
