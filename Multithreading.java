@@ -3,7 +3,7 @@ import java.io.*;
 
 class Multithreading {
   public static int counter;
-  public static int[] defectiveBulbs = new int[2];
+  public static int[] defectiveBulbs;
 
   public static void main(String []args) throws Exception
   {
@@ -16,6 +16,7 @@ class Multithreading {
 
     int numBulbs = Integer.parseInt(br.readLine());
     int[] bulbsArray = new int[numBulbs];
+    Multithreading.defectiveBulbs = new int[numBulbs];
     
     while((input = br.readLine()) != null)
     {
@@ -26,7 +27,10 @@ class Multithreading {
     //endregion
     
     FindDefective(bulbsArray, 0 ,bulbsArray.length);
+    System.out.print("The defectives bulbs: ");
     printArray(Multithreading.defectiveBulbs);
+    System.out.println();
+    System.out.print("The number of threads for this problem: ");
   }
 
   //Finds the defective bulb
@@ -67,7 +71,10 @@ class Multithreading {
   {
     for(int i = 0; i < array.length; i++)
     {
-      System.out.println(array[i]);
+      if(array[i] != 0)
+      {
+        System.out.print(array[i] + " ");
+      }
     }
   }
 }
