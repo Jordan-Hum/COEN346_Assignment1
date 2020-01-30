@@ -1,7 +1,9 @@
-//Jordan Hum - 4009 | Anthony Icampo - 40096683
+//Jordan Hum - 40095876 | Anthony Iacampo - 40096683
 import java.io.*;
 
-class Multithreading {
+
+class Multithreading 
+{
   public static int counter;
   public static int[] defectiveBulbs;
 
@@ -38,23 +40,27 @@ class Multithreading {
   {
     if(max - min == 1)
     {
-      if(bulbs[min] == 0)
-      {
         Multithreading.defectiveBulbs[counter] = max;
         Multithreading.counter++;
         return;
-      }
     }
 
     int pivot = (min + max) / 2;
+    boolean isLeftDefective = false;
+    boolean isRightDefective = false;
     
     //Left array
     for(int i = min; i < pivot; i++)
     {
       if(bulbs[i] == 0)
       {
-        FindDefective(bulbs, min, pivot);
+        isLeftDefective = true;
       }
+    }
+
+    if(isLeftDefective)
+    {
+      FindDefective(bulbs, min, pivot);
     }
 
     //Right array
@@ -62,8 +68,13 @@ class Multithreading {
     {
       if(bulbs[i] == 0)
       {
-        FindDefective(bulbs, pivot, max);
+        isRightDefective = true;
       }
+    }
+
+    if(isRightDefective)
+    {
+      FindDefective(bulbs, pivot, max);
     }
   }
 
