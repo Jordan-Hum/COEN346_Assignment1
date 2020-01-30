@@ -2,10 +2,17 @@
 import java.io.*;
 
 
-class Multithreading 
+class Multithreading implements Runnable 
 {
   public static int counter;
   public static int[] defectiveBulbs;
+  public static int threadCounter = 0;
+
+  //*Keep for Runnable
+  public void run() 
+  {
+    Multithreading.threadCounter++;
+  }
 
   public static void main(String []args) throws Exception
   {
@@ -32,49 +39,60 @@ class Multithreading
     System.out.print("The defectives bulbs: ");
     printArray(Multithreading.defectiveBulbs);
     System.out.println();
-    System.out.print("The number of threads for this problem: ");
+    System.out.print("The number of threads for this problem: " + threadCounter);
   }
 
   //Finds the defective bulb
   public static void FindDefective(int[] bulbs, int min, int max)
   {
-    if(max - min == 1)
+    try
     {
+      Thread t = new Thread();
+      t.start();
+      //Multithreading.threadCounter++;
+      if(max - min == 1)
+      {
         Multithreading.defectiveBulbs[counter] = max;
         Multithreading.counter++;
         return;
-    }
+      }
 
-    int pivot = (min + max) / 2;
-    boolean isLeftDefective = false;
-    boolean isRightDefective = false;
+      int pivot = (min + max) / 2;
+      boolean isLeftDefective = false;
+      boolean isRightDefective = false;
     
-    //Left array
-    for(int i = min; i < pivot; i++)
-    {
-      if(bulbs[i] == 0)
+      //Left array
+      for(int i = min; i < pivot; i++)
       {
-        isLeftDefective = true;
+       if(bulbs[i] == 0)
+        {
+          isLeftDefective = true;
+        }
       }
-    }
 
-    if(isLeftDefective)
-    {
-      FindDefective(bulbs, min, pivot);
-    }
-
-    //Right array
-    for(int i = pivot; i < max; i++)
-    {
-      if(bulbs[i] == 0)
+     if(isLeftDefective)
       {
-        isRightDefective = true;
+        FindDefective(bulbs, min, pivot);
       }
-    }
 
-    if(isRightDefective)
+      //Right array
+      for(int i = pivot; i < max; i++)
+      {
+       if(bulbs[i] == 0)
+       {
+         isRightDefective = true;
+       }
+      }
+
+      if(isRightDefective)
+      {
+       FindDefective(bulbs, pivot, max);
+      }
+      t.join();
+    }
+    catch(InterruptedException err)
     {
-      FindDefective(bulbs, pivot, max);
+      System.out.println(err);
     }
   }
 
