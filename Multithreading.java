@@ -1,59 +1,65 @@
 //Jordan Hum - 40095876 | Anthony Iacampo - 40096683
 import java.io.*;
 
-
 class Multithreading implements Runnable 
 {
-  public static int counter;
-  public static int[] defectiveBulbs;
-  public static int threadCounter = 0;
-
-  //*Keep for Runnable
-  public void run() 
-  {
-    Multithreading.threadCounter++;
-  }
+  static int[] bulbs;
+  static int numBulbs;
+  static int defectiveCounter;
+  static int[] defectiveBulbs;
+  static int threadCounter = 0;
 
   public static void main(String []args) throws Exception
   {
-    //region read from txt file
     FileReader fr = new FileReader("Input.txt");
     BufferedReader br = new BufferedReader(fr);
 
     String input;
     int argsIndex = 0;
 
-    int numBulbs = Integer.parseInt(br.readLine());
-    int[] bulbsArray = new int[numBulbs];
-    Multithreading.defectiveBulbs = new int[numBulbs];
+    numBulbs = Integer.parseInt(br.readLine());
+    bulbs = new int[numBulbs];
+    defectiveBulbs = new int[numBulbs];
     
     while((input = br.readLine()) != null)
     {
-      bulbsArray[argsIndex] = Integer.parseInt(input);
+      bulbs[argsIndex] = Integer.parseInt(input);
       argsIndex++;
     }
     br.close();
-    //endregion
-    
-    FindDefective(bulbsArray, 0 ,bulbsArray.length);
+
+    Thread t = new Thread(new Multithreading());
+    t.start();
+    threadCounter++;
+
+    try
+    {
+      t.join();
+    }
+    catch(InterruptedException err)
+    {
+      System.out.println(err);
+    }
+
+    //Output
     System.out.print("The defectives bulbs: ");
-    printArray(Multithreading.defectiveBulbs);
-    System.out.println();
-    System.out.print("The number of threads for this problem: " + threadCounter);
+    printArray(defectiveBulbs);
+    System.out.print("\nThe number of threads for this problem: " + threadCounter);
+  }
+
+  //Run thread
+  public void run() 
+  {
+    FindDefective(bulbs, 0 ,bulbs.length);
   }
 
   //Finds the defective bulb
-  public static void FindDefective(int[] bulbs, int min, int max)
+  public void FindDefective(int[] bulbs, int min, int max)
   {
-    try
-    {
-      Thread t = new Thread();
-      t.start();
-      //Multithreading.threadCounter++;
       if(max - min == 1)
       {
-        Multithreading.defectiveBulbs[counter] = max;
-        Multithreading.counter++;
+        defectiveBulbs[defectiveCounter] = max;
+        defectiveCounter++;
         return;
       }
 
@@ -62,6 +68,9 @@ class Multithreading implements Runnable
       boolean isRightDefective = false;
     
       //Left array
+      Thread left = new Thread();
+      threadCounter++;
+      left.start();
       for(int i = min; i < pivot; i++)
       {
        if(bulbs[i] == 0)
@@ -69,13 +78,16 @@ class Multithreading implements Runnable
           isLeftDefective = true;
         }
       }
-
      if(isLeftDefective)
       {
         FindDefective(bulbs, min, pivot);
       }
 
       //Right array
+      Thread right = new Thread();
+      threadCounter++;
+      right.start();
+
       for(int i = pivot; i < max; i++)
       {
        if(bulbs[i] == 0)
@@ -83,12 +95,15 @@ class Multithreading implements Runnable
          isRightDefective = true;
        }
       }
-
       if(isRightDefective)
       {
        FindDefective(bulbs, pivot, max);
       }
-      t.join();
+
+    try 
+    {
+      left.join();
+      right.join();
     }
     catch(InterruptedException err)
     {
@@ -96,7 +111,7 @@ class Multithreading implements Runnable
     }
   }
 
-  static void printArray(int[] array)
+  private static void printArray(int[] array)
   {
     for(int i = 0; i < array.length; i++)
     {
