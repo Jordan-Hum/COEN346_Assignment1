@@ -57,8 +57,29 @@ class Multithreading implements Runnable
     defectiveBulbs = new int[numBulbs];
     while((input = br.readLine()) != null)
     {
-      bulbs[argsIndex] = Integer.parseInt(input);
-      argsIndex++;
+      if(Integer.parseInt(input) == 0 || Integer.parseInt(input) == 1)
+      {
+    	try
+    	{
+    	bulbs[argsIndex] = Integer.parseInt(input);
+      	argsIndex++;
+    	}
+    	catch(Exception err)
+    	{
+    		System.out.println("Invalid array size");
+        	System.exit(0);
+    	}
+      }
+      else
+      {
+    	System.out.println("Invalid input");
+    	System.exit(0);
+      }
+    }
+    if(numBulbs > argsIndex)
+    {
+		System.out.println("Invalid array size");
+    	System.exit(0);
     }
     br.close();
   }
@@ -81,7 +102,9 @@ class Multithreading implements Runnable
           defectiveCounter++;
           return;
         }
-      } else {
+      } 
+    else 
+    {
         if(isDefective())
         {
           //System.out.println("left array"); //Just for test
@@ -114,10 +137,10 @@ class Multithreading implements Runnable
     {
       if(bulbs[i] == 0)
       {
-				return true;
-			}
-		}
-		return false;
+		return true;
+	  }
+	}
+	return false;
   }
 
   //Prints the array of indexes of defective bulb
@@ -128,6 +151,10 @@ class Multithreading implements Runnable
       if(array[i] != 0)
       {
         System.out.print(array[i] + " ");
+      }
+      else
+      {
+    	  break;
       }
     }
   }
